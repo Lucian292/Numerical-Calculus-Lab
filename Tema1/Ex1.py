@@ -10,3 +10,5 @@ def gaseste_precizia_masina():
 
 precizia_masina = gaseste_precizia_masina()
 print(precizia_masina)
+
+# 2.220446049250313e-16
