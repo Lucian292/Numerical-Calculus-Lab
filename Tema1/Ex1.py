@@ -1,9 +1,8 @@
 import sys
 
 def gaseste_precizia_masina():
-    epsilon = sys.float_info.epsilon
     p = 1
-    while 10**(-p) > epsilon:
+    while 1 + 10 ** (-p) != 1:
         p += 1
     return p - 1
 
