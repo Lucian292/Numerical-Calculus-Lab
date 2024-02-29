@@ -1,15 +1,39 @@
-u = 1
-
+# Pentru adunare
 x = 1.0
-y = u
-z = u
+y = 1e-16  # Valoare mică, pozitivă
+z = -1e-16  # Valoare mică, negativă
 
-partea_stanga = (x + y) + z
-partea_dreapta = x + (y + z)
+# Verificăm neasociativitatea adunării
+expr1 = (x + y) + z
+expr2 = x + (y + z)
 
-neasociativitate = partea_stanga != partea_dreapta
+print("Expresia 1: ", expr1)
+print("Expresia 2: ", expr2)
 
-if neasociativitate:
-    print("(x +_c y) +_c z nu este egal cu x +_c (y +_c z)")
+if expr1 != expr2:
+    print("Operația de adunare este neasociativă.")
 else:
-    print("(x +_c y) +_c z este egal cu x +_c (y +_c z)")
+    print("Operația de adunare este asociativă.")
+
+# Pentru înmulțire
+a = 1.0
+b = 10**16
+c = 10**-16
+
+# Verificăm neasociativitatea înmulțirii
+expr3 = (a * b) * c
+expr4 = a * (b * c)
+
+print("Expresia 3: ", expr3)
+print("Expresia 4: ", expr4)
+
+if expr3 != expr4:
+    print("Operația de înmulțire este neasociativă.")
+else:
+    print("Operația de înmulțire este asociativă.")
+
+
+
+
+
+
