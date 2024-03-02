@@ -1,102 +1,124 @@
 import numpy as np
 
-# Implementarea algoritmului de descompunere LU
-def descompunere_LU(A):
+def identity_matrix(n):
+    return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+
+def lu_decomposition(A):
     n = len(A)
-    L = np.eye(n)  # Matricea L începe ca identitatea
-    U = np.zeros((n, n))
+    L = identity_matrix(n)
+    U = [[0] * n for _ in range(n)]
 
     for i in range(n):
-        # Calculăm elementele matricei U
-        for j in range(i, n):
-            suma = sum(L[i][k] * U[k][j] for k in range(i))
-            U[i][j] = A[i][j] - suma
+        # Upper Triangular
+        for k in range(i, n):
+            sum = 0
+            for j in range(i):
+                sum += L[i][j] * U[j][k]
+            U[i][k] = A[i][k] - sum
 
-        # Calculăm elementele matricei L
-        for j in range(i+1, n):
-            suma = sum(L[j][k] * U[k][i] for k in range(i))
-            L[j][i] = (A[j][i] - suma) / U[i][i]
+        # Lower Triangular
+        for k in range(i, n):
+            if i == k:
+                L[i][i] = 1  # Diagonal as 1
+            else:
+                sum = 0
+                for j in range(i):
+                    sum += L[k][j] * U[j][i]
+                L[k][i] = (A[k][i] - sum) / U[i][i]
 
     return L, U
 
-# Funcția de rezolvare a sistemului inferior triunghiular Ly = b
-def solve_lower_triangular(L, b):
+def forward_substitution(L, b):
     n = len(L)
-    y = np.zeros(n)
-
+    y = [0] * n
     for i in range(n):
-        y[i] = (b[i] - np.dot(L[i, :i], y[:i])) / L[i, i]
-
+        y[i] = (b[i] - sum(L[i][j] * y[j] for j in range(i))) / L[i][i]
     return y
 
-# Funcția de rezolvare a sistemului superior triunghiular Ux = y
-def solve_upper_triangular(U, y):
+def backward_substitution(U, y):
     n = len(U)
-    x = np.zeros(n)
-
-    for i in range(n-1, -1, -1):
-        x[i] = (y[i] - np.dot(U[i, i+1:], x[i+1:])) / U[i, i]
-
+    x = [0] * n
+    for i in range(n - 1, -1, -1):
+        x[i] = (y[i] - sum(U[i][j] * x[j] for j in range(i + 1, n))) / U[i][i]
     return x
 
-# Rezolvăm sistemul Ax = b folosind descompunerea LU
-def solve_LU(L, U, b):
-    y = solve_lower_triangular(L, b)
-    x = solve_upper_triangular(U, y)
-    return x
+def matrix_multiplication(A, B):
+    return [[sum(a * b for a, b in zip(row_a, col_b)) for col_b in zip(*B)] for row_a in A]
 
-
-# Funcția de calcul a inversului unei matrice
 def inverse_matrix(A):
     n = len(A)
-    L, U = descompunere_LU(A)
-
-    # Calculăm inversa matricei A rezolvând n sisteme liniare
-    inv_A = np.zeros((n, n))
+    identity = identity_matrix(n)
+    L, U = lu_decomposition(A)
+    A_inv = []
     for i in range(n):
-        b = np.zeros(n)
-        b[i] = 1
-        inv_A[:, i] = solve_LU(L, U, b)
+        e = [0] * n
+        e[i] = 1
+        y = forward_substitution(L, e)
+        x = backward_substitution(U, y)
+        A_inv.append(x)
+    return list(zip(*A_inv))
 
-    return inv_A
+def determinant_LU(L, U):
+    det_L = 1
+    det_U = 1
+    n = len(L)
 
-# Citim dimensiunea sistemului și precizia calculelor
-n = int(input("Introduceți dimensiunea sistemului: "))
-precizie = float(input("Introduceți precizia calculelor: "))
+    for i in range(n):
+        det_L *= L[i][i]
+        det_U *= U[i][i]
 
-# Generăm matricea A și vectorul b
-A_init = np.random.rand(n, n)
-b_init = np.random.rand(n)
+    return det_L * det_U
 
-# Păstrăm o copie a matricei A inițiale pentru a verifica eroarea mai târziu
-A = np.copy(A_init)
-b = np.copy(b_init)
+def calculate_norm(xLU, xlib, Ainv_lib, b_init):
+    norm1 = np.linalg.norm(np.dot(A_init, xLU) - b_init)
+    norm2 = np.linalg.norm(xLU - np.dot(Ainv_lib, b_init))
+    return norm1, norm2
 
-# Descompunem matricea A în L și U
-L, U = descompunere_LU(A)
+def main():
+    global A_init  # Declaram matricea A_init ca globala pentru a putea fi accesata in calculate_norm
+    # Date de intrare
+    n = 3  # Dimensiunea sistemului
+    eps = 1e-9  # Precizia calculelor
 
-# Calculăm determinantul matricei A
-det_A = np.linalg.det(A)
-det_LU = np.prod(np.diag(U))  # Produsul elementelor de pe diagonala lui U
+    # Matricea sistemului A și vectorul termenilor liberi b
+    A = [
+        [2.5, 2, 2],
+        [5, 6, 5],
+        [5, 6, 6.5]
+    ]
+    b = [2, 2, 2]
 
-# Verificăm dacă determinanta este nenulă
-if abs(det_A) < precizie:
-    print("Determinanta matricei A este foarte mică sau zero. Imposibil de continuat.")
-else:
-    print("Determinantul matricei A:", det_A)
-    print("Determinantul matricei LU:", det_LU)
+    # Copierea matricei A pentru a păstra datele inițiale
+    A_init = np.copy(A)
 
-    # Calculăm soluția sistemului Ax = b folosind descompunerea LU
-    x_LU = solve_LU(L, U, b)
+    # Descompunerea LU a matricei A
+    L, U = lu_decomposition(A)
 
-    # Calculăm inversa matricei A
-    inv_A = inverse_matrix(A)
+    # Calculul determinantului matricei A
+    det_A = determinant_LU(L, U)
 
-    # Calculăm eroarea ||x_LU - x_init||_2
-    eroare_x = np.linalg.norm(x_LU - np.linalg.solve(A_init, b_init))
+    # Calculul soluției xLU folosind descompunerea LU și metodele substituției directe și inverse
+    y = forward_substitution(L, b)
+    xLU = backward_substitution(U, y)
 
-    # Calculăm eroarea ||x_LU - A_inv * b_init||_2
-    eroare_inv = np.linalg.norm(x_LU - np.dot(inv_A, b_init))
+    # Calculul inversului matricei A folosind biblioteca numpy
+    A_inv_lib = inverse_matrix(A)
 
-    print("Eroarea ||x_LU - x_init||_2:", eroare_x)
-    print("Eroarea ||x_LU - A_inv * b_init||_2:", eroare_inv)
+    # Calculul soluției inverse xlib
+    xlib = np.dot(A_inv_lib, b)
+
+    # Calculul normelor
+    norm1, norm2 = calculate_norm(xLU, xlib, A_inv_lib, b)
+
+    # Afișarea rezultatelor
+    print("Descompunerea LU a matricei A:")
+    print("L =", L)
+    print("U =", U)
+    print("\nDeterminantul matricei A:", det_A)
+    print("\nSolutia sistemului Ax = b (xLU):", xLU)
+    print("\nInversa matricei A (A_inv_lib):", A_inv_lib)
+    print("\nNorma ||A_init*xLU - b_init||2:", norm1)
+    print("Norma ||xLU - A_inv_lib*b_init||2:", norm2)
+
+if __name__ == "__main__":
+    main()
