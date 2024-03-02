@@ -19,7 +19,7 @@ def lu_decomposition(A):
         # Lower Triangular
         for k in range(i, n):
             if i == k:
-                L[i][i] = 1  # Diagonal as 1
+                L[i][i] = 1  # diagonal as 1
             else:
                 sum = 0
                 for j in range(i):

@@ -1,4 +1,6 @@
 # Pentru adunare
+import random
+
 x = 1.0
 y = 1e-15  # u=10^(-15)
 z = 1e-15  # u=-10^(-15)
@@ -15,18 +17,19 @@ else:
     print("operatia de adunare este asociativa")
 
 # Pentru inmultire
-a = 1.0
-b = 1e-16
-c = -1e-16
-
+b = 1e-15
+c = 1e-15
+#a = 1.0
+a=random.uniform(b, c)
+print(a)
 for i in range(0, 325):
-    b = 10**(-i) # i
-    c = 10**(-i) # i
-    print(b, c)
+    #b = 10**(-i) # i
+    #c = 10**(-i) # i
+    #print(b, c)
+    a *= 10
     if (((a * b) * c) != (a * (b * c))):
         print("Expresia 3: ", (a * b) * c)
         print("Expresia 4: ", a * (b * c))
-        print(i)
         break
 
 if (a * b) * c != a * (b * c):
