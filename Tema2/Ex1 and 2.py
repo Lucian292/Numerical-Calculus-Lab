@@ -122,3 +122,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Mai precis, codul:
+#
+# Definește o funcție lu_decomposition care calculează descompunerea LU a unei matrici date.
+# Definește funcțiile forward_substitution și backward_substitution pentru a rezolva sistemele de ecuații liniare.
+# Calculează determinantul matricei A folosind descompunerea LU.
+# Calculează soluția sistemului Ax = b folosind descompunerea LU și metodele substituției directe și inverse.
+# Calculează inversa matricei A folosind o bibliotecă externă (numpy).
+# Calculează și afișează normele specificate.
