@@ -1,7 +1,6 @@
 import math
 import random
 
-# Definirea funcțiilor rationale T(i, a)
 def T4(a):
     return (105*a - 10*(a**3))/(105 - 45*(a**2) + a**4)
 
@@ -28,17 +27,16 @@ def C(n, a):
     T = globals()[f"T{n}"]
     return 1 / math.sqrt(1 + T(a)**2)
 
-# generarea a 10.000 de numere aleatoare
 random_numbers = [random.uniform(-math.pi/2, math.pi/2) for _ in range(10000)]
 
-# calculul valorilor exacte ale funcțiilor tangent sinus cosinus
+# calculul valorilor exacte ale funcеiilor tangent sinus cosinus
 exact_values_tan = [math.tan(x) for x in random_numbers]
 exact_values_sin = [math.sin(x) for x in random_numbers]
 exact_values_cos = [math.cos(x) for x in random_numbers]
 
 # calculul valorilor aproximarilor si erorilor pentru tangent
 approximation_functions_tan = [T4, T5, T6, T7, T8, T9]
-errors_tan = [[] for _ in range(6)]  # o lista goala pentru fiecare funcție de aproximare tangent
+errors_tan = [[] for _ in range(6)]
 
 for func_index, func in enumerate(approximation_functions_tan):
     for a, v_exact in zip(random_numbers, exact_values_tan):
@@ -54,7 +52,7 @@ for func_index, func in enumerate(approximation_functions_tan):
 # identificarea celor mai mici trei erori pentru fiecare numar generat pentru tangent
 top_three_indices_tan = [sorted(range(len(errors_tan)), key=lambda i: errors_tan[i][j])[:3] for j in range(10000)]
 
-# calcularea frecventei aparițiilor functiilor in topurile cu cele mai mici erori pentru tangent
+# calcularea frecventei aparitiilor functiilor in topurile cu cele mai mici erori pentru tangent
 frequency_count_tan = {i: [0] * 6 for i in range(10000)}
 
 for i, indices in enumerate(top_three_indices_tan):
