@@ -65,15 +65,7 @@ def backward_substitution(A, y):
     return x
 
 def inverse_matrix(A):
-    n = len(A)
-    A_inv = []
-    for i in range(n):
-        e = [0] * n
-        e[i] = 1
-        y = forward_substitution(A, e)
-        x = backward_substitution(A, y)
-        A_inv.append(x)
-    return list(zip(*A_inv))
+    return np.linalg.inv(A)
 
 def calculate_norm(xLU, xlib, A_inv_lib, b_init):
     norm1 = np.linalg.norm(np.dot(A_init, xLU) - b_init)
@@ -103,7 +95,7 @@ def main():
     y = forward_substitution(A, b)
     xLU = backward_substitution(A, y)
 
-    A_inv_lib = inverse_matrix(A)
+    A_inv_lib = inverse_matrix(A_init)
 
     # calculul solutiei inverse xlib
     xlib = np.dot(A_inv_lib, b)
