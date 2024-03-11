@@ -14,7 +14,7 @@ def print_U(A):
     for i in range(n):
         for j in range(i, n):
             if i == j:
-                U[i][j] = 1  # pe diagonala principala valorile sunt doar 1
+                U[i][j] = 1
             else:
                 U[i][j] = A[i][j]
     print("U =", U)
@@ -23,29 +23,25 @@ def lu_decomposition(A):
     n = len(A)
 
     for p in range(n):
-        # Calcularea elementelor coloanei p
+        # calcularea elementelor coloanei p
         for i in range(p, n):
             sum = 0
             for k in range(p):
                 sum += A[i][k] * A[k][p]
             A[i][p] = A[i][p] - sum
 
-        # Verificarea dacă elementul de pe diagonala principală este zero
-        if abs(A[p][p]) < eps:  # folosim variabila globală eps pentru precizie
-            raise ValueError("Descompunerea LU nu este posibilă pentru matricea dată.")
+        # verificarea dacă elementul de pe diagonala principală este zero
+        if abs(A[p][p]) < eps:
+            raise ValueError("descompunerea LU nu este posibila pentru matricea data")
 
-        # Calcularea elementelor liniei p
+        # calcularea elementelor liniei p
         for i in range(p + 1, n):
             sum = 0
             for k in range(p):
                 sum += A[p][k] * A[k][i]
             A[p][i] = (A[p][i] - sum) / A[p][p]
 
-    return A  # A conține acum atât L (sub diagonala principală), cât și U (pe și deasupra diagonalei principale)
-
-
-def matrix_multiplication(A, B):
-    return [[sum(a * b for a, b in zip(row_a, col_b)) for col_b in zip(*B)] for row_a in A]
+    return A
 
 def determinant_LU(A):
     n = len(A)
@@ -88,12 +84,9 @@ def calculate_norm(xLU, xlib, A_inv_lib, b_init):
 
 
 def main():
-    global A_init  # Declaram matricea A_init ca globala pentru a putea fi accesata in calculate_norm
-    # Date de intrare
-    n = 3  # Dimensiunea sistemului
-    global eps  # Precizia calculelor
+    global A_init
+    global eps
     eps = 1e-9
-    # Matricea sistemului A și vectorul termenilor liberi b
     A = [
         [2.5, 2, 2],
         [5, 6, 5],
@@ -101,30 +94,22 @@ def main():
     ]
     b = [2, 2, 2]
 
-    # Copierea matricei A pentru a păstra datele inițiale
     A_init = np.copy(A)
 
-    # Descompunerea LU a matricei A
     A = lu_decomposition(A)
 
-    # Calculul determinantului matricei A
     det_A = determinant_LU(A)
 
-    # Calculul soluției xLU folosind descompunerea LU și metodele substituției directe și inverse
     y = forward_substitution(A, b)
     xLU = backward_substitution(A, y)
 
-    # Calculul inversului matricei A folosind biblioteca numpy
     A_inv_lib = inverse_matrix(A)
 
-    # Calculul soluției inverse xlib
+    # calculul solutiei inverse xlib
     xlib = np.dot(A_inv_lib, b)
 
-    # Calculul normelor
     norm1, norm2, norm3 = calculate_norm(xLU, xlib, A_inv_lib, b)
 
-
-    # Afișarea rezultatelor
     print("Descompunerea LU a matricei A:")
     print_L(A)
     print_U(A)
@@ -137,12 +122,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# Mai precis, codul:
-#
-# Definește o funcție lu_decomposition care calculează descompunerea LU a unei matrici date.
-# Definește funcțiile forward_substitution și backward_substitution pentru a rezolva sistemele de ecuații liniare.
-# Calculează determinantul matricei A folosind descompunerea LU.
-# Calculează soluția sistemului Ax = b folosind descompunerea LU și metodele substituției directe și inverse.
-# Calculează inversa matricei A folosind o bibliotecă externă (numpy).
-# Calculează și afișează normele specificate.
