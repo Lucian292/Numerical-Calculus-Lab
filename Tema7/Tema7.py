@@ -1,5 +1,6 @@
 import numpy as np
 
+global dx
 
 # Definirea metodei lui Horner pentru evaluarea unui polinom într-un punct
 def horner(poly, x):
@@ -12,11 +13,14 @@ def horner(poly, x):
 # Definirea metodei lui Muller pentru găsirea rădăcinilor unui polinom
 def muller(poly, eps=1e-6, max_iter=1000):
     # Calcularea intervalului [-R, R]
-    R = abs(poly[0]) + max([abs(a) for a in poly[1:]])
+    R = (abs(poly[0]) + max([abs(a) for a in poly[1:]])) / abs(poly[0])
+    print("R: ", R)
 
     # Generarea valorilor x0, x1, x2 aleatoriu din intervalul [-R, R]
     x0, x1, x2 = np.random.uniform(-R, R, 3)
+    print("x0: ", x0, "x1: ", x1, "x2: ", x2)
 
+    dx = np.inf
     k = 3
     while True:
         h0 = x1 - x0
@@ -36,8 +40,12 @@ def muller(poly, eps=1e-6, max_iter=1000):
             break
         x0, x1, x2 = x1, x2, x3
         k += 1
-    return x2
 
+    # Verificarea dacă algoritmul a convergat sau a divergat
+    if abs(dx) < eps:
+        return x2  # Algoritmul a convergat
+    else:
+        return None  # Algoritmul a divergat
 
 # Definirea coeficienților polinomului
 poly = [1, -6, 11, -6]
@@ -46,4 +54,7 @@ poly = [1, -6, 11, -6]
 root = muller(poly)
 
 # Afișarea rădăcinilor
-print("Rădăcina polinomului este:", root)
+if root is not None:
+    print("Rădăcina polinomului este:", root)
+else:
+    print("Algoritmul nu a convergat.")
