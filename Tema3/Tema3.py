@@ -6,17 +6,20 @@ n = 3  # You can change the size of the system
 epsilon = 1e-10  # Precision of calculations
 
 # Random initialization of square matrix A and vector s
-A = np.random.rand(n, n)
-s = np.random.rand(n)
+# A = np.random.rand(n, n)
+# s = np.random.rand(n)
+
+# print("Matrix A:")
+# print(A)
+
+A = np.array([[0, 0, 4],
+              [1, 2, 3],
+              [0, 1, 2]], dtype=float)
+
+s = np.array([3, 2, 1], dtype=float)
 
 print("Matrix A:")
 print(A)
-
-# A = np.array([[0, 0, 4],
-#               [1, 2, 3],
-#               [0, 1, 2]], dtype=float)
-#
-# s = np.array([3, 2, 1], dtype=float)
 
 # Calculate vector b
 b = A @ s
