@@ -10,6 +10,35 @@ def horner(poly, x):
     return result
 
 
+# Definirea metodei lui Horner pentru calculul derivatei unui polinom într-un punctdef horner_derivative(poly, x):
+def horner_derivative(poly, x):
+    n = len(poly) - 1
+    result = poly[0] * n
+    for i in range(1, n):
+        result = result * x + poly[i] * (n - i)
+    return result
+
+
+# Definirea metodei N4 pentru găsirea rădăcinilor unui polinom
+def newton_n4(poly, x0, eps=1e-6, max_iter=1000):
+    for _ in range(max_iter):
+        # Calcularea lui y_n și x_{n+1}
+        y_n = x0 - horner(poly, x0) / horner_derivative(poly, x0)
+        denominator = horner_derivative(poly, x0) * (horner(poly, x0) - horner(poly, y_n))
+        if abs(denominator) < eps:  # eps este o valoare mică pozitivă
+            break  # Întrerupeți bucla dacă numitorul este prea aproape de zero
+        x1 = x0 - (horner(poly, x0) ** 2 + horner(poly, y_n) ** 2) / denominator
+
+        # Verificarea dacă algoritmul a convergat
+        if abs(x1 - x0) < eps:
+            return x1
+
+        x0 = x1
+
+    # Algoritmul nu a convergat
+    return None
+
+
 # Definirea metodei lui Muller pentru găsirea rădăcinilor unui polinom
 def muller(poly, eps=1e-6, max_iter=1000):
     # Calcularea intervalului [-R, R]
@@ -54,6 +83,18 @@ poly = [1, -6, 11, -6]
 root = muller(poly)
 
 # Afișarea rădăcinilor
+if root is not None:
+    print("Rădăcina polinomului este:", root)
+else:
+    print("Algoritmul nu a convergat.")
+
+# Generarea valorii x0 aleatoriu din intervalul [-1, 1]
+x0 = np.random.uniform(-1, 1)
+
+# Apelarea metodei N4 pentru a găsi rădăcina polinomului
+root = newton_n4(poly, x0)
+
+# Afișarea rădăcinii
 if root is not None:
     print("Rădăcina polinomului este:", root)
 else:
