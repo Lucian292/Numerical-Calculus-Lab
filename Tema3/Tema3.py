@@ -4,15 +4,15 @@ from scipy.linalg import qr as scipy_qr, inv as scipy_inv
 n = 3
 epsilon = 1e-10
 
-# A = np.random.rand(n, n)
-# s = np.random.rand(n)
+A = np.random.rand(n, n)
+s = np.random.rand(n)
 
-A = np.array([[1, 0, 0],
-              [0, 2, 0],
-              [0, 0, 3]], dtype=float)
-
-
-s = np.array([3, 2, 1], dtype=float)
+# A = np.array([[1, 0, 0],
+#               [0, 2, 0],
+#               [0, 0, 3]], dtype=float)
+#
+#
+# s = np.array([3, 2, 1], dtype=float)
 
 A_Copy = A.copy()
 
