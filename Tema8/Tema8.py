@@ -10,6 +10,7 @@ def gradient_descent(F, dF, x_init, y_init, learning_rate, precision, max_iters)
     x_new, y_new = x, y
     for i in range(max_iters):
         grad_x, grad_y = dF(x, y)
+        learning_rate*=0.5
         x_new = x - learning_rate * grad_x
         y_new = y - learning_rate * grad_y
         if np.sqrt((x_new - x)**2 + (y_new - y)**2) <= precision:
@@ -52,28 +53,25 @@ def F4(x, y):
 def dF4(x, y):
     return np.array([2*x*y - 2*y**2 + 3*y, x**2 - 4*y*x + 3*x])
 
-# Set the initial point, learning rate, precision and maximum number of iterations
 x_init, y_init = np.random.rand(2)
 learning_rate = 0.01
 precision = 1e-5
 max_iters = 30000
 
-# List of functions and their gradients
 functions = [(F1, dF1), (F2, dF2), (F3, dF3), (F4, dF4)]
 
 results_analytic = []
 results_approx = []
 
-print("Metoda analitică:")
+print("Metoda analiticф:")
 
-# Run the gradient descent algorithm for each function
 for i, (F, dF) in enumerate(functions, start=1):
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=RuntimeWarning)
         x_min, y_min, iterations = gradient_descent(F, dF, x_init, y_init, learning_rate, precision, max_iters)
     results_analytic.append((x_min, y_min))
     if x_min == -np.inf or x_min == np.inf or y_min == -np.inf or y_min == np.inf:
-        print("Pentru functia F" + str(i) + " - Divergenta")
+        print("Pentru funcia F" + str(i) + " - Divergenta")
         continue
     print("Pentru funcția F" + str(i) + ":", x_min, y_min, "iteratii: ", iterations)
 
@@ -81,7 +79,6 @@ print("\nMetoda aproximativă:")
 
 functions = [F1, F2, F3, F4]
 
-# Run the gradient descent algorithm for each function
 for i, F in enumerate(functions, start=1):
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=RuntimeWarning)
@@ -102,7 +99,6 @@ for i in range(len(functions)):
 # GUI
 root = tk.Tk()
 
-# Create a treeview widget
 tree = ttk.Treeview(root, columns=('Funtion', 'Analytical', 'Approximation', 'Error'), show='headings')
 tree.heading('Funtion', text='Funtion')
 tree.heading('Analytical', text='Analytical')
